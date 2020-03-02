@@ -1,0 +1,1 @@
+export { default } from 'ember-thumbor-images/components/responsive-image';

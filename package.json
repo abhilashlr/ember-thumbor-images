@@ -1,9 +1,13 @@
 {
   "name": "ember-thumbor-images",
-  "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "version": "0.0.1",
+  "description": "ember-thumbor-images is a simple addon that generates safe/unsafe thumbor image urls durin build. You can use it to define your responsive images in your ember apps.",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "ember thumbor",
+    "thumbor",
+    "images",
+    "responsive images"
   ],
   "repository": "",
   "license": "MIT",
@@ -21,8 +25,14 @@
     "test:all": "ember try:each"
   },
   "dependencies": {
+    "broccoli-caching-writer": "^3.0.3",
+    "broccoli-funnel": "^2.0.1",
+    "broccoli-merge-trees": "^3.0.2",
+    "broccoli-stew": "^2.0.1",
     "ember-cli-babel": "^7.13.0",
-    "ember-cli-htmlbars": "^4.2.0"
+    "ember-cli-htmlbars": "^4.2.0",
+    "fs-extra": "^7.0.1",
+    "thumbor-url-builder": "^0.1.1"
   },
   "devDependencies": {
     "@ember/optional-features": "^1.1.0",

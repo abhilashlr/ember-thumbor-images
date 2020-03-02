@@ -9,11 +9,17 @@
     "images",
     "responsive images"
   ],
-  "repository": "",
+  "bugs": {
+    "url": "https://github.com/abhilashlr/ember-thumbor-images/issues"
+  },
+  "homepage": "https://github.com/abhilashlr/ember-thumbor-images#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhilashlr/ember-thumbor-images.git"
+  },
   "license": "MIT",
-  "author": "",
+  "author": "Abhilash L R",
   "directories": {
-    "doc": "doc",
     "test": "tests"
   },
   "scripts": {

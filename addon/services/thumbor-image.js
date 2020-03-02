@@ -2,15 +2,19 @@ import Service from '@ember/service';
 
 export default class ThumborImageService extends Service {
   getImage(imageName, size) {
-    let sizes = this.getSizes();
     let { meta } = this;
+    if (!meta) {
+      return imageName;
+    }
+
+    let sizes = this.getSizes();
 
     size = size || Math.max(...sizes);
 
-    return meta ? meta[imageName][size] : imageName;
+    return meta[imageName][size];
   }
 
   getSizes() {
-    return this.meta.sizes;
+    return this.meta && this.meta.sizes;
   }
 }

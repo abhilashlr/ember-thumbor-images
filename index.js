@@ -24,10 +24,6 @@ module.exports = {
   addonOptions: {},
   metaData: {},
 
-  isDevelopingAddon() {
-    return true;
-  },
-
   config(env, baseConfig) {
     if (!env) {
       return;

@@ -47,7 +47,8 @@ class ThumborImageComposerPlugin extends Plugin {
     const thumborURL = new ThumborUrlBuilder(process.env.THUMBOR_SECRET_KEY, this.thumborOptions.host);
     const sizesToConvert = this.thumborOptions.sizes;
     let meta = {};
-    let filePath = `${this.thumborOptions.assetPrepend}${join(this.thumborOptions.rootURL, this.thumborOptions.sourceDir, file)}`;
+    let filePath = join(this.thumborOptions.rootURL, this.thumborOptions.sourceDir, file);
+    let fullFilePath = `${this.thumborOptions.assetPrepend}${filePath}`;
     let currentGeneratedURL;
 
     // TODO:: Find better ways to just get the file path without fingerprint
@@ -59,7 +60,7 @@ class ThumborImageComposerPlugin extends Plugin {
     sizesToConvert.forEach((size) => {
       if (this.thumborOptions.enabled) {
         currentGeneratedURL = thumborURL
-                  .setImagePath(filePath)
+                  .setImagePath(fullFilePath)
                   .resize(size, 0)
                   .smartCrop(true)
                   .buildUrl();

@@ -1,19 +1,16 @@
 'use strict';
 
 const ThumborUrlBuilder = require('thumbor-url-builder');
-const path = require('path');
-const fs = require('fs-extra');
-const CachingWriter = require('broccoli-caching-writer');
+const { ensureDirSync, readdirSync } = require('fs-extra');
+const Plugin = require('broccoli-plugin');
+const { join, parse } = require('path');
 
-class ThumborImageComposer extends CachingWriter {
-  constructor(inputNodes, options, metaData, ui) {
-    options = options || {};
-    options.cacheInclude = [/.*/];
-
+class ThumborImageComposerPlugin extends Plugin {
+  constructor(inputNodes, options = {}, metaData, ui) {
     super(inputNodes, options);
 
     this.thumborOptions = options;
-    this.metaData = metaData || {};
+    this.metaData = metaData;
     this.ui = ui;
   }
 
@@ -25,36 +22,56 @@ class ThumborImageComposer extends CachingWriter {
 
   build() {
     let sourcePath = this.inputPaths[0];
-    let destinationPath = path.join(this.outputPath, sourcePath);
+    let destinationPath = join(this.outputPath, '/');
 
-    fs.ensureDirSync(destinationPath);
+    ensureDirSync(destinationPath);
 
-    let files = fs.readdirSync(sourcePath);
+    let files = readdirSync(sourcePath);
+    let filesPromise = [];
 
     files
-      .map((file) => {
-        this.writeInfoLine(`File prepared: ${file}`);
-
-        this.constructMeta(file);
+      .forEach((file) => {
+        filesPromise.push(
+          this.constructMeta(file).then(([filePathKey, meta]) => {
+            this.metaData[filePathKey] = meta;
+          })
+        );
       });
+
+    Promise.all(filesPromise).then(() => {
+      this.output.writeFileSync('thumbor-asset-manifest.json', JSON.stringify(this.metaData));
+    });
   }
 
   constructMeta(file) {
     const thumborURL = new ThumborUrlBuilder(process.env.THUMBOR_SECRET_KEY, this.thumborOptions.host);
     const sizesToConvert = this.thumborOptions.sizes;
     let meta = {};
-    let filePath = `${this.metaData.prepend}${path.join(this.thumborOptions.rootURL, this.thumborOptions.sourceDir, file)}`;
+    let filePath = `${this.thumborOptions.assetPrepend}${join(this.thumborOptions.rootURL, this.thumborOptions.sourceDir, file)}`;
+    let currentGeneratedURL;
+
+    // TODO:: Find better ways to just get the file path without fingerprint
+    let filePathKey = parse(filePath).name.split('-');
+    filePathKey = filePath.replace(`-${filePathKey[filePathKey.length - 1]}`, '');
+    this.writeInfoLine(`Added meta for: ${filePathKey}`);
+    // TODO:: Find better ways to just get the file path without fingerprint
 
     sizesToConvert.forEach((size) => {
-      meta[size] = thumborURL
-                .setImagePath(filePath)
-                .resize(size, 0)
-                .smartCrop(true)
-                .buildUrl();
+      if (this.thumborOptions.enabled) {
+        currentGeneratedURL = thumborURL
+                  .setImagePath(filePath)
+                  .resize(size, 0)
+                  .smartCrop(true)
+                  .buildUrl();
+      } else {
+        currentGeneratedURL = filePath;
+      }
+
+      meta[size] = currentGeneratedURL; // Adds the first key generated to the meta.
     });
 
-    this.metaData[filePath] = meta;
+    return Promise.resolve([filePathKey, meta]);
   }
 }
 
-module.exports = ThumborImageComposer;
+module.exports = ThumborImageComposerPlugin;

@@ -11,7 +11,9 @@ function defaultConfig(env) {
     enabled: env === 'production',
     sourceDir: 'assets/images/',
     sizes: [1024],
-    extensions: ['jpg', 'jpeg', 'png', 'gif']
+    extensions: ['jpg', 'jpeg', 'png', 'gif'],
+    host: '',
+    assetPrepend: ''
   };
 
   return defaultConfig;
@@ -20,9 +22,7 @@ function defaultConfig(env) {
 module.exports = {
   name: require('./package').name,
   addonOptions: {},
-  metaData: {
-    prepend: ''
-  },
+  metaData: {},
 
   isDevelopingAddon() {
     return true;
@@ -41,35 +41,27 @@ module.exports = {
     this.addonOptions = Object.assign({}, defaultConfig(env), config);
 
     this.metaData.sizes = this.addonOptions.sizes;
+    this.metaData.host = this.addonOptions.host;
   },
 
   included(app, parentAddon) {
     this._super.included.apply(this, arguments);
+
     this.app = (parentAddon || app);
   },
 
   postprocessTree(type, tree) {
     if (type === 'all') {
-      if (!this.addonOptions.enabled) {
-        return tree;
-      }
-
-      if (this.app && this.app.options && this.app.options.fingerprint) {
-        this.metaData.prepend = this.app.options.fingerprint.prepend.replace(/\/$/, '');
-      }
       let trees = [];
       let imageTree = this.generateThumborURLs(tree, this.addonOptions);
 
       trees.push(imageTree);
 
-      // TODO:: See if we can move this to JSON file output instead of meta tags.
       let pattern = /["']__ember_thumbor_image_meta__["']/;
       let mapMeta = (content) => content.replace(pattern, JSON.stringify(this.metaData));
-      // TODO:: See if we can move this to JSON file output instead of meta tags.
 
       trees = trees.concat([
         tree,
-        map(find(tree, '**/*.js'), mapMeta),
         map(find(tree, '**/index.html'), mapMeta)
       ]);
 
@@ -95,9 +87,6 @@ module.exports = {
     // TODO:: Figure our if its possible to push this as a separate file and optimise build times 
     // from that instead of writing this everytime.
     if (type === 'head-footer') {
-      if (!this.addonOptions.enabled) {
-        return;
-      }
       let txt = [
         '<script id="ember_thumbor_image_meta" type="application/json">',
         '\'__ember_thumbor_image_meta__\'',

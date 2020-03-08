@@ -1,6 +1,5 @@
 import Application from '@ember/application';
-
-import { initialize } from 'travelike-ninja/initializers/thumbor-setup';
+import { initialize } from 'ember-thumbor-images/initializers/thumbor-setup';
 import { module, test } from 'qunit';
 import { run } from '@ember/runloop';
 

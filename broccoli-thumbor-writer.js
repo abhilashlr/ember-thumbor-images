@@ -1,7 +1,7 @@
 'use strict';
 
 const ThumborUrlBuilder = require('thumbor-url-builder');
-const { ensureDirSync, readdirSync } = require('fs-extra');
+const { ensureDirSync } = require('fs-extra');
 const Plugin = require('broccoli-plugin');
 const { join, parse } = require('path');
 
@@ -26,20 +26,31 @@ class ThumborImageComposerPlugin extends Plugin {
 
     ensureDirSync(destinationPath);
 
-    let files = readdirSync(sourcePath);
+    // TODO:: This is a hacky fix for 1-level deep folder. Figure out a stable solution
+    // for deep-nested folders for images.
+    let folders = this.input.readdirSync(sourcePath);
     let filesPromise = [];
+    let files = [];
+    
+    folders.forEach((folder) => {
+      files = this.input.readdirSync(folder);
 
-    files
-      .forEach((file) => {
-        filesPromise.push(
-          this.constructMeta(file).then(([filePathKey, meta]) => {
-            this.metaData[filePathKey] = meta;
-          })
-        );
+      files
+        .forEach((file) => {
+          let folderedFile = `${folder}/${file}`;
+
+          this.writeInfoLine(folderedFile);
+  
+          filesPromise.push(
+            this.constructMeta(folderedFile).then(([filePathKey, meta]) => {
+              this.metaData[filePathKey] = meta;
+            })
+          );
+        });
+  
+      Promise.all(filesPromise).then(() => {
+        this.output.writeFileSync('thumbor-asset-manifest.json', JSON.stringify(this.metaData));
       });
-
-    Promise.all(filesPromise).then(() => {
-      this.output.writeFileSync('thumbor-asset-manifest.json', JSON.stringify(this.metaData));
     });
   }
 

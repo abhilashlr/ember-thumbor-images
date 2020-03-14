@@ -39,15 +39,13 @@ class ThumborImageComposerPlugin extends Plugin {
         .forEach((file) => {
           let folderedFile = `${folder}/${file}`;
 
-          this.writeInfoLine(folderedFile);
-  
           filesPromise.push(
             this.constructMeta(folderedFile).then(([filePathKey, meta]) => {
               this.metaData[filePathKey] = meta;
             })
           );
         });
-  
+
       Promise.all(filesPromise).then(() => {
         this.output.writeFileSync('thumbor-asset-manifest.json', JSON.stringify(this.metaData));
       });
@@ -62,11 +60,7 @@ class ThumborImageComposerPlugin extends Plugin {
     let fullFilePath = `${this.thumborOptions.assetPrepend}${filePath}`;
     let currentGeneratedURL;
 
-    // TODO:: Find better ways to just get the file path without fingerprint
-    let filePathKey = parse(filePath).name.split('-');
-    filePathKey = filePath.replace(`-${filePathKey[filePathKey.length - 1]}`, '');
-    this.writeInfoLine(`Added meta for: ${filePathKey}`);
-    // TODO:: Find better ways to just get the file path without fingerprint
+    this.writeInfoLine(`Added meta for: ${file}`);
 
     sizesToConvert.forEach((size) => {
       if (this.thumborOptions.enabled) {
@@ -82,7 +76,7 @@ class ThumborImageComposerPlugin extends Plugin {
       meta[size] = currentGeneratedURL; // Adds the first key generated to the meta.
     });
 
-    return Promise.resolve([filePathKey, meta]);
+    return Promise.resolve([file, meta]);
   }
 }
 

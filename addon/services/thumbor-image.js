@@ -24,13 +24,17 @@ export default class ThumborImageService extends Service {
   }
 
   cacheImagesFromMeta() {
-    let metaDOM = this.document.querySelector('#ember_thumbor_image_meta');
+    if (typeof Fastboot === undefined) {
+      return;
+    }
+
+    let metaDOM = window.thumborConfig();
 
     if (!metaDOM) {
       return;
     }
 
-    this.meta = JSON.parse(metaDOM.textContent);
+    this.meta = metaDOM;
 
     return this.meta;
   }

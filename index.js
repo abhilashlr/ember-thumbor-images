@@ -58,6 +58,7 @@ module.exports = {
 
       trees = trees.concat([
         tree,
+        map(find(tree, '**/*.js'), mapMeta),
         map(find(tree, '**/index.html'), mapMeta)
       ]);
 
@@ -84,8 +85,8 @@ module.exports = {
     // from that instead of writing this everytime.
     if (type === 'head-footer') {
       let txt = [
-        '<script id="ember_thumbor_image_meta" type="application/json">',
-        '\'__ember_thumbor_image_meta__\'',
+        '<script type="text/javascript">',
+          'window.thumborConfig = () => { return \'__ember_thumbor_image_meta__\'; }',
         '</script>'
       ];
       return txt.join("\n");

@@ -24,10 +24,6 @@ export default class ThumborImageService extends Service {
   }
 
   cacheImagesFromMeta() {
-    if (!(typeof Fastboot === undefined)) {
-      return;
-    }
-
     let metaDOM = this.document.querySelector('#ember_thumbor_image_meta');
 
     if (!metaDOM) {

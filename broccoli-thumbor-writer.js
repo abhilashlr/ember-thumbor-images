@@ -3,7 +3,7 @@
 const ThumborUrlBuilder = require('thumbor-url-builder');
 const { ensureDirSync } = require('fs-extra');
 const Plugin = require('broccoli-plugin');
-const { join, parse } = require('path');
+const { join } = require('path');
 
 class ThumborImageComposerPlugin extends Plugin {
   constructor(inputNodes, options = {}, metaData, ui) {

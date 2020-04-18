@@ -20,6 +20,12 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+    },
+    thumbor: {
+      host: '',
+      sizes: [320, 768, 1024],
+      sourceDir: 'assets',
+      assetPrepend: ''
     }
   };
 

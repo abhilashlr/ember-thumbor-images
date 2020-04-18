@@ -8,13 +8,13 @@ export default class ThumborImageService extends Service {
 
     meta = meta || this.cacheImagesFromMeta();
 
-    if (!meta) {
+    if (!meta || !meta[imageName]) {
       return imageName;
     }
 
     let sizes = this.getSizes();
 
-    size = size || Math.max(...sizes);
+    size = sizes.includes(size) ? size : Math.max(...sizes);
 
     return meta[imageName][size];
   }
@@ -28,13 +28,13 @@ export default class ThumborImageService extends Service {
       return;
     }
 
-    let metaDOM = window.thumborConfig();
+    let thumborConfig = window.thumborConfig();
 
-    if (!metaDOM) {
+    if (!thumborConfig) {
       return;
     }
 
-    this.meta = metaDOM;
+    this.meta = thumborConfig;
 
     return this.meta;
   }

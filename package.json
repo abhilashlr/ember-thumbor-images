@@ -33,7 +33,7 @@
     "test:ember": "ember test"
   },
   "dependencies": {
-    "broccoli-funnel": "2.0.2",
+    "broccoli-funnel": "3.0.2",
     "broccoli-merge-trees": "3.0.2",
     "broccoli-plugin": "4.0.2",
     "broccoli-stew": "3.0.0",

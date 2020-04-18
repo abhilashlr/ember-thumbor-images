@@ -7,20 +7,8 @@ module('Integration | Component | responsive-image', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
+    await render(hbs`<ResponsiveImage @src="images/chicago-zoey.png" @alt="Chicago tomster" />`);
 
-    await render(hbs`<ResponsiveImage />`);
-
-    assert.equal(this.element.textContent.trim(), '');
-
-    // Template block usage:
-    await render(hbs`
-      <ResponsiveImage>
-        template block text
-      </ResponsiveImage>
-    `);
-
-    assert.equal(this.element.textContent.trim(), 'template block text');
+    assert.equal(this.element.querySelector('img').src, 'http://localhost:7357/assets/images/chicago-zoey.png');
   });
 });

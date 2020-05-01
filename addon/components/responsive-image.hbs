@@ -2,5 +2,5 @@
   {{#each this.sizes as |size|}}
     <source media="(max-width: {{size}}px)" srcset={{thumbor-src @src size}}>
   {{/each}}
-  <img src={{thumbor-src @src}} alt={{@alt}} loading="lazy" />
+  <img src={{thumbor-src @src}} alt={{@alt}} loading="lazy" height={{@height}} width={{@width}} />
 </picture>

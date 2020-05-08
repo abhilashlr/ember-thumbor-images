@@ -29,6 +29,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - uses: abhilashlr/simple-coverage-report@89e988d092b1f8d1d9299371aedbfc038a88ebda
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"

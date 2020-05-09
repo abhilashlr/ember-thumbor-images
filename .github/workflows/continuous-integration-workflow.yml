@@ -8,6 +8,7 @@ on:
 
 jobs:
   test:
+    name: Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +23,16 @@ jobs:
     - name: Execute tests
       run: npm test
 
+    - name: Coverage test
+      run: COVERAGE=TRUE npm run test:ember
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: pr_coverage_summary_json
+        path: coverage/coverage-summary.json
+
   simple-coverage-report:
+    name: Coverage report
     needs: test
     runs-on: ubuntu-latest
     name: Code coverage changes
@@ -31,11 +41,21 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - uses: abhilashlr/simple-coverage-report@89e988d092b1f8d1d9299371aedbfc038a88ebda
+
+    - uses: actions/download-artifact@v1
+      with:
+        name: pr_coverage_summary_json
+    - shell: bash 
+      id: coverage_result
+      run: echo ::set-output name=COVERAGE_RESULT::$(cat pr_coverage_summary_json/coverage-summary.json)
+
+    - uses: abhilashlr/simple-coverage-report@master
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        artifact-json: ${{ steps.coverage_result.outputs.COVERAGE_RESULT }}
 
   ember-cli-update:
+    name: CLI update
     needs: test
     if: github.event_name == 'pull_request'
 

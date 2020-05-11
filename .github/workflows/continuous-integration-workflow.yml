@@ -32,10 +32,9 @@ jobs:
         path: coverage/coverage-summary.json
 
   simple-coverage-report:
-    name: Coverage report
+    name: Code coverage changes
     needs: test
     runs-on: ubuntu-latest
-    name: Code coverage changes
 
     steps:
     - uses: actions/checkout@v2

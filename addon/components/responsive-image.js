@@ -7,7 +7,7 @@ export default class ResponsiveImageComponent extends Component {
 
   constructor() {
     super(...arguments);
-  
+
     this.sizes = this.thumborImage.getSizes();
   }
 

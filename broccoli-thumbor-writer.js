@@ -14,12 +14,6 @@ class ThumborImageComposerPlugin extends Plugin {
     this.ui = ui;
   }
 
-  writeInfoLine(message) {
-    if (this.ui) {
-      this.ui.writeInfoLine(message);
-    }
-  }
-
   build() {
     let sourcePath = this.inputPaths[0];
     let destinationPath = join(this.outputPath, '/');
@@ -59,8 +53,6 @@ class ThumborImageComposerPlugin extends Plugin {
     let filePath = join(this.thumborOptions.rootURL, this.thumborOptions.sourceDir, file);
     let fullFilePath = `${this.thumborOptions.assetPrepend}${filePath}`;
     let currentGeneratedURL;
-
-    this.writeInfoLine(`Added meta for: ${file}`);
 
     sizesToConvert.forEach((size) => {
       if (this.thumborOptions.enabled) {

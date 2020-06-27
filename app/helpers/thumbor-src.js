@@ -1,1 +1,1 @@
-export { default, thumborSrc } from 'ember-thumbor-images/helpers/thumbor-src';
+export { default } from 'ember-thumbor-images/helpers/thumbor-src';

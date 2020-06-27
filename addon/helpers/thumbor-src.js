@@ -2,8 +2,8 @@ import Helper from '@ember/component/helper';
 import { inject as service } from '@ember/service';
 import { htmlSafe } from '@ember/string';
 
-export default Helper.extend({
-  thumborImage: service(),
+export default class ThumborSrcHelper extends Helper {
+  @service thumborImage;
 
   compute(params) {
     let [image, size] = params;
@@ -11,4 +11,4 @@ export default Helper.extend({
 
     return htmlSafe(responsive);
   }
-});
+}

@@ -1,12 +1,10 @@
-import Service, { inject as service } from '@ember/service';
+import Service from '@ember/service';
 
 export default class ThumborImageService extends Service {
-  @service('-document') document;
+  meta = '__ember_thumbor_image_meta__';
 
   getImage(imageName, size) {
     let { meta } = this;
-
-    meta = meta || this.cacheImagesFromMeta();
 
     if (!meta || !meta[imageName]) {
       return imageName;
@@ -21,21 +19,5 @@ export default class ThumborImageService extends Service {
 
   getSizes() {
     return this.meta && this.meta.sizes;
-  }
-
-  cacheImagesFromMeta() {
-    if (typeof Fastboot === undefined) {
-      return;
-    }
-
-    let thumborConfig = window.thumborConfig();
-
-    if (!thumborConfig) {
-      return;
-    }
-
-    this.meta = thumborConfig;
-
-    return this.meta;
   }
 }

@@ -46,31 +46,26 @@ module.exports = {
     this.app = (parentAddon || app);
   },
 
-  postprocessTree(type, tree) {
-    if (type === 'all') {
-      let trees = [];
-      let imageTree = this.generateThumborURLs(tree, this.addonOptions);
+  treeForAddon() {
+    let trees = [];
 
-      trees.push(imageTree);
+    let imageTree = this.generateThumborURLs(this.addonOptions);
 
-      let pattern = /["']__ember_thumbor_image_meta__["']/;
-      let mapMeta = (content) => content.replace(pattern, JSON.stringify(this.metaData));
+    trees.push(imageTree);
 
-      trees = trees.concat([
-        tree,
-        map(find(tree, '**/*.js'), mapMeta),
-        map(find(tree, '**/index.html'), mapMeta)
-      ]);
+    let pattern = /["']__ember_thumbor_image_meta__["']/;
+    let mapMeta = (content) => content.replace(pattern, JSON.stringify(this.metaData));
 
-      return mergeTrees(trees, { overwrite: true });
-    }
+    trees = trees.concat([
+      map(find(this._super.treeForAddon.apply(this, arguments), '**/*.js'), mapMeta)
+    ]);
 
-    return tree;
+    return mergeTrees(trees, { overwrite: true });
   },
 
-  generateThumborURLs(tree, options) {
-    let extensions = options.extensions.join('|');
-    let funnel = new Funnel(tree, {
+  generateThumborURLs(options) {
+    let extensions = (options.extensions || []).join('|');
+    let funnel = new Funnel('public', {
       srcDir: options.sourceDir,
       include: [`**/*.+(${extensions})`],
       allowEmpty: true,
@@ -80,16 +75,7 @@ module.exports = {
     return new ThumborWriter([funnel], options, this.metaData, this.ui);
   },
 
-  contentFor(type) {
-    // TODO:: Figure our if its possible to push this as a separate file and optimise build times 
-    // from that instead of writing this everytime.
-    if (type === 'head-footer') {
-      let txt = [
-        '<script type="text/javascript">',
-          'window.thumborConfig = () => { return \'__ember_thumbor_image_meta__\'; }',
-        '</script>'
-      ];
-      return txt.join("\n");
-    }
+  isDevelopingAddon() {
+    return true;
   }
 };

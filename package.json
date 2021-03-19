@@ -37,7 +37,7 @@
     "broccoli-merge-trees": "4.2.0",
     "broccoli-plugin": "4.0.3",
     "broccoli-stew": "3.0.0",
-    "ember-cli-babel": "7.23.0",
+    "ember-cli-babel": "7.26.2",
     "ember-cli-htmlbars": "5.3.1",
     "fs-extra": "9.0.1",
     "thumbor-url-builder": "0.1.1"

@@ -1,6 +1,6 @@
 {
   "name": "ember-thumbor-images",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "ember-thumbor-images is a simple addon that generates safe/unsafe thumbor image urls durin build. You can use it to define your responsive images in your ember apps.",
   "keywords": [
     "ember-addon",
